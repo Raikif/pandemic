@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🦠 Pandemic - Board Game Online</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background Particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: radial-gradient(circle, #00ff88 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 15s infinite;
+            opacity: 0.3;
+        }
+
+        .particle:nth-child(1) { left: 10%; animation-delay: 0s; animation-duration: 12s; }
+        .particle:nth-child(2) { left: 20%; animation-delay: 2s; animation-duration: 15s; }
+        .particle:nth-child(3) { left: 30%; animation-delay: 4s; animation-duration: 18s; }
+        .particle:nth-child(4) { left: 40%; animation-delay: 1s; animation-duration: 14s; }
+        .particle:nth-child(5) { left: 50%; animation-delay: 3s; animation-duration: 16s; }
+        .particle:nth-child(6) { left: 60%; animation-delay: 5s; animation-duration: 13s; }
+        .particle:nth-child(7) { left: 70%; animation-delay: 2s; animation-duration: 17s; }
+        .particle:nth-child(8) { left: 80%; animation-delay: 4s; animation-duration: 11s; }
+        .particle:nth-child(9) { left: 90%; animation-delay: 1s; animation-duration: 19s; }
+        .particle:nth-child(10) { left: 95%; animation-delay: 3s; animation-duration: 14s; }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(100vh) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.3;
+            }
+            90% {
+                opacity: 0.3;
+            }
+            100% {
+                transform: translateY(-100vh) scale(1);
+                opacity: 0;
+            }
+        }
+
+        /* Virus Animation Background */
+        .virus-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .virus {
+            position: absolute;
+            font-size: 30px;
+            opacity: 0.1;
+            animation: virusFloat 20s infinite linear;
+        }
+
+        @keyframes virusFloat {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(100px, -100px) rotate(90deg); }
+            50% { transform: translate(0, -200px) rotate(180deg); }
+            75% { transform: translate(-100px, -100px) rotate(270deg); }
+            100% { transform: translate(0, 0) rotate(360deg); }
+        }
+
+        /* Main Container */
+        .container {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* Logo Section */
+        .logo-section {
+            text-align: center;
+            margin-bottom: 50px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .logo-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 4rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #00ff88 0%, #00b4d8 50%, #ff006e 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 50px rgba(0, 255, 136, 0.3);
+            letter-spacing: 5px;
+        }
+
+        .logo-subtitle {
+            font-size: 1.2rem;
+            color: #888;
+            margin-top: 10px;
+            letter-spacing: 3px;
+        }
+
+        /* Menu Cards */
+        .menu-cards {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .menu-card {
+            background: linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 40px;
+            width: 280px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .menu-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .menu-card:hover::before {
+            left: 100%;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .menu-card.host {
+            border-color: rgba(0, 255, 136, 0.3);
+        }
+
+        .menu-card.host:hover {
+            border-color: rgba(0, 255, 136, 0.8);
+            box-shadow: 0 20px 40px rgba(0, 255, 136, 0.2);
+        }
+
+        .menu-card.player {
+            border-color: rgba(0, 180, 216, 0.3);
+        }
+
+        .menu-card.player:hover {
+            border-color: rgba(0, 180, 216, 0.8);
+            box-shadow: 0 20px 40px rgba(0, 180, 216, 0.2);
+        }
+
+        .menu-card.rules {
+            border-color: rgba(255, 0, 110, 0.3);
+        }
+
+        .menu-card.rules:hover {
+            border-color: rgba(255, 0, 110, 0.8);
+            box-shadow: 0 20px 40px rgba(255, 0, 110, 0.2);
+        }
+
+        .card-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+
+        .menu-card.host .card-icon { color: #00ff88; }
+        .menu-card.player .card-icon { color: #00b4d8; }
+        .menu-card.rules .card-icon { color: #ff006e; }
+
+        .card-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .card-desc {
+            color: #aaa;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* Features Section */
+        .features {
+            margin-top: 60px;
+            text-align: center;
+            animation: fadeIn 1s ease-out 0.6s both;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .features-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            color: #888;
+        }
+
+        .features-list {
+            display: flex;
+            gap: 40px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        .feature-item i {
+            color: #00ff88;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 60px;
+            text-align: center;
+            color: #444;
+            font-size: 0.85rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .logo-title {
+                font-size: 2.5rem;
+            }
+
+            .menu-cards {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .menu-card {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .features-list {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Particles Background -->
+    <div class="particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
+    <!-- Virus Background -->
+    <div class="virus-bg">
+        <div class="virus" style="top: 10%; left: 5%;">🦠</div>
+        <div class="virus" style="top: 20%; right: 10%;">🧬</div>
+        <div class="virus" style="top: 60%; left: 8%;">🦠</div>
+        <div class="virus" style="top: 70%; right: 5%;">🧬</div>
+        <div class="virus" style="top: 40%; left: 50%;">🦠</div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Logo Section -->
+        <div class="logo-section">
+            <div class="logo-icon">🌍</div>
+            <h1 class="logo-title">PANDEMIC</h1>
+            <p class="logo-subtitle">SAVE THE WORLD TOGETHER</p>
+        </div>
+
+        <!-- Menu Cards -->
+        <div class="menu-cards">
+            <!-- Host Card -->
+            <div class="menu-card host" onclick="window.location.href='host.html'">
+                <div class="card-icon">
+                    <i class="fas fa-tv"></i>
+                </div>
+                <h2 class="card-title">HOST GAME</h2>
+                <p class="card-desc">Buat room baru dan tampilkan di TV sebagai game board utama</p>
+            </div>
+
+            <!-- Player Card -->
+            <div class="menu-card player" onclick="window.location.href='player.html'">
+                <div class="card-icon">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+                <h2 class="card-title">JOIN GAME</h2>
+                <p class="card-desc">Gabung ke room dengan scan QR atau masukkan kode game</p>
+            </div>
+
+            <!-- Rules Card -->
+            <div class="menu-card rules" onclick="showRules()">
+                <div class="card-icon">
+                    <i class="fas fa-book"></i>
+                </div>
+                <h2 class="card-title">CARA MAIN</h2>
+                <p class="card-desc">Pelajari aturan dan strategi untuk memenangkan game</p>
+            </div>
+        </div>
+
+        <!-- Features -->
+        <div class="features">
+            <h3 class="features-title">✨ FITUR GAME</h3>
+            <div class="features-list">
+                <div class="feature-item">
+                    <i class="fas fa-users"></i>
+                    <span>2-10 Pemain</span>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-qrcode"></i>
+                    <span>Join via QR Code</span>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-sync-alt"></i>
+                    <span>Real-time Sync</span>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-mobile-alt"></i>
+                    <span>Mobile Friendly</span>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-handshake"></i>
+                    <span>Cooperative Play</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>🎮 Pandemic Web Game v1.0 | Made with ❤️</p>
+        </div>
+    </div>
+
+    <script>
+        <!-- Ganti bagian ini di index.html -->
+
+    function showRules() {
+        window.location.href = 'rules.html';
+    }
+    
+    // ... rest of the script
+
+
+        // Add some interactivity
+        document.querySelectorAll('.menu-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-10px) scale(1.02)';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+    </script>
+</body>
+</html>
