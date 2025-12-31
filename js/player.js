@@ -2878,11 +2878,6 @@ async function autoDrawCards(count) {
                 return;
             }
             
-            // Add card to current player
-            const currentPlayer = gameState.players[currentPlayerId];
-            if (!currentPlayer.cards) currentPlayer.cards = [];
-            currentPlayer.cards.push(drawnCardData);
-            
             // Check if it's an epidemic
             const isEpidemic = drawnCardData.type === 'epidemic';
             if (isEpidemic) hasEpidemic = true;
@@ -2890,7 +2885,18 @@ async function autoDrawCards(count) {
             // Update Firebase
             const updates = {};
             updates[`gameState/playerDeck`] = remainingDeck;
-            updates[`gameState/players/${currentPlayerId}/cards`] = currentPlayer.cards;
+            
+            // ✅ IMPORTANT: Hanya tambahkan non-epidemic ke hand
+            if (!isEpidemic) {
+                const currentPlayer = gameState.players[currentPlayerId];
+                if (!currentPlayer.cards) currentPlayer.cards = [];
+                currentPlayer.cards.push(drawnCardData);
+                updates[`gameState/players/${currentPlayerId}/cards`] = currentPlayer.cards;
+            } else {
+                // Epidemic tidak ditambahkan ke hand, tapi tetap draw lagi untuk mengganti
+                console.log('⚠️ Epidemic drawn - akan draw 1 kartu tambahan');
+                count++; // Draw satu kartu tambahan untuk mengganti epidemic
+            }
             
             if (isEpidemic) {
                 // Handle epidemic - returns updated gameState
@@ -3096,18 +3102,21 @@ async function drawPlayerCard() {
         const drawnCardData = gameState.playerDeck[0];
         const remainingDeck = gameState.playerDeck.slice(1);
         
-        // Add card to current player
-        const currentPlayer = gameState.players[currentPlayerId];
-        if (!currentPlayer.cards) currentPlayer.cards = [];
-        currentPlayer.cards.push(drawnCardData);
-        
         // Check if it's an epidemic
         const isEpidemic = drawnCardData.type === 'epidemic';
         
         // Update Firebase
         const updates = {};
         updates[`gameState/playerDeck`] = remainingDeck;
-        updates[`gameState/players/${currentPlayerId}/cards`] = currentPlayer.cards;
+        
+        // ✅ IMPORTANT: Epidemic card tidak ditambahkan ke hand!
+        // Hanya non-epidemic yang ditambahkan ke hand
+        if (!isEpidemic) {
+            const currentPlayer = gameState.players[currentPlayerId];
+            if (!currentPlayer.cards) currentPlayer.cards = [];
+            currentPlayer.cards.push(drawnCardData);
+            updates[`gameState/players/${currentPlayerId}/cards`] = currentPlayer.cards;
+        }
         
         if (isEpidemic) {
             // Handle epidemic
@@ -3133,7 +3142,14 @@ async function drawPlayerCard() {
         // Show drawn card with animation
         showDrawnCard(drawnCardData, isEpidemic);
         
-        cardsDrawn++;
+        // ✅ IMPORTANT: Hanya hitung kartu non-epidemic
+        // Epidemic tidak dihitung karena tidak ditambahkan ke hand
+        if (!isEpidemic) {
+            cardsDrawn++;
+        } else {
+            // Jika epidemic, tampilkan pesan khusus
+            showToast('☣️ EPIDEMIC! Kartu epidemic tidak dihitung, draw lagi!', 'error', 2000);
+        }
         
         // Update progress
         const remaining = cardsToDraw - cardsDrawn;
