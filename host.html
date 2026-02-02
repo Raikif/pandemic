@@ -1,0 +1,2249 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🖥️ Pandemic - Host Display</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- QR Code Library -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        /* ==================== LOBBY SCREEN ==================== */
+        .lobby-screen {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        .lobby-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            background: rgba(0,0,0,0.3);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            font-size: 40px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .logo h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            background: linear-gradient(135deg, #00ff88, #00b4d8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .room-info {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .room-code-display {
+            text-align: center;
+        }
+
+        .room-code-label {
+            font-size: 0.9rem;
+            color: #888;
+            margin-bottom: 5px;
+        }
+
+        .room-code {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: #00ff88;
+            letter-spacing: 8px;
+            text-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+        }
+
+        .back-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #fff;
+            padding: 12px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: rgba(255,0,0,0.2);
+            border-color: #ff4444;
+        }
+
+        /* Lobby Content */
+        .lobby-content {
+            flex: 1;
+            display: flex;
+            padding: 40px;
+            gap: 40px;
+        }
+
+        /* Left Side - QR Code & Join Info */
+        .join-section {
+            width: 350px;
+            background: linear-gradient(145deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%);
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .join-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.3rem;
+            margin-bottom: 25px;
+            color: #00b4d8;
+        }
+
+        .qr-container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+        }
+
+        #qrcode {
+            width: 200px;
+            height: 200px;
+        }
+
+        #qrcode canvas {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        .or-divider {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin: 20px 0;
+            width: 100%;
+        }
+
+        .or-divider::before,
+        .or-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(255,255,255,0.2);
+        }
+
+        .or-divider span {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .join-url {
+            background: rgba(0,0,0,0.3);
+            padding: 15px 20px;
+            border-radius: 10px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .join-url-label {
+            font-size: 0.85rem;
+            color: #888;
+            margin-bottom: 8px;
+        }
+
+        .join-url-text {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.95rem;
+            color: #00ff88;
+            word-break: break-all;
+        }
+
+        /* Right Side - Players List */
+        .players-section {
+            flex: 1;
+            background: linear-gradient(145deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%);
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .players-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .players-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.3rem;
+            color: #00b4d8;
+        }
+
+        .players-count {
+            background: rgba(0, 255, 136, 0.2);
+            color: #00ff88;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+        }
+
+        .players-grid {
+            flex: 1;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 15px;
+            align-content: start;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .players-grid::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .players-grid::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.05);
+            border-radius: 3px;
+        }
+
+        .players-grid::-webkit-scrollbar-thumb {
+            background: rgba(0, 255, 136, 0.3);
+            border-radius: 3px;
+        }
+
+        .player-card {
+            background: rgba(0,0,0,0.3);
+            border-radius: 15px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .player-card.ready {
+            border-color: #00ff88;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.2);
+        }
+
+        .player-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .player-info {
+            flex: 1;
+        }
+
+        .player-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 3px;
+        }
+
+        .player-role {
+            font-size: 0.85rem;
+            color: #888;
+        }
+
+        .player-status {
+            font-size: 20px;
+        }
+
+        /* Empty Slots */
+        .empty-slot {
+            background: rgba(255,255,255,0.03);
+            border: 2px dashed rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            color: #444;
+        }
+
+        .empty-slot i {
+            font-size: 24px;
+        }
+
+        /* Waiting Animation */
+        .waiting-text {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .waiting-text .dots {
+            animation: dots 1.5s infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
+
+        /* Start Button */
+        .lobby-footer {
+            padding: 30px 40px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .start-btn {
+            background: linear-gradient(135deg, #00ff88 0%, #00b4d8 100%);
+            border: none;
+            color: #000;
+            padding: 20px 60px;
+            border-radius: 15px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.3);
+        }
+
+        .start-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 255, 136, 0.4);
+        }
+
+        .start-btn:disabled {
+            background: linear-gradient(135deg, #333 0%, #444 100%);
+            color: #666;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .settings-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #fff;
+            padding: 20px 40px;
+            border-radius: 15px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .settings-btn:hover {
+            background: rgba(255,255,255,0.15);
+        }
+
+        /* ==================== GAME SCREEN ==================== */
+        .game-screen {
+            display: none;
+            min-height: 100vh;
+            flex-direction: column;
+        }
+
+        .game-screen.active {
+            display: flex;
+        }
+
+        .lobby-screen.hidden {
+            display: none;
+        }
+
+        /* Game Header */
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            background: rgba(0,0,0,0.5);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .game-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .game-logo h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            background: linear-gradient(135deg, #00ff88, #00b4d8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Game Stats */
+        .game-stats {
+            display: flex;
+            gap: 25px;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(0,0,0,0.3);
+            padding: 10px 20px;
+            border-radius: 10px;
+        }
+
+        .stat-icon {
+            font-size: 24px;
+        }
+
+        .stat-info {
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: #888;
+            text-transform: uppercase;
+        }
+
+        .stat-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .stat-value.danger {
+            color: #ff4444;
+        }
+
+        .stat-value.warning {
+            color: #ffaa00;
+        }
+
+        .stat-value.safe {
+            color: #00ff88;
+        }
+
+        /* Outbreak Track */
+        .outbreak-track {
+            display: flex;
+            gap: 5px;
+        }
+
+        .outbreak-marker {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .outbreak-marker.active {
+            background: #ff4444;
+            border-color: #ff4444;
+            box-shadow: 0 0 10px rgba(255, 68, 68, 0.5);
+        }
+
+        /* Infection Rate Track */
+        .infection-track {
+            display: flex;
+            gap: 5px;
+        }
+
+        .infection-marker {
+            width: 30px;
+            height: 25px;
+            border-radius: 5px;
+            background: rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .infection-marker.active {
+            background: linear-gradient(135deg, #ff006e, #ff4444);
+            box-shadow: 0 0 10px rgba(255, 0, 110, 0.5);
+        }
+
+        /* Current Turn */
+        .current-turn {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            padding: 10px 25px;
+            border-radius: 10px;
+        }
+
+        .turn-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .turn-info {
+            text-align: left;
+        }
+
+        .turn-label {
+            font-size: 0.75rem;
+            color: #00ff88;
+        }
+
+        .turn-name {
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        .turn-actions {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #00ff88;
+            margin-left: 10px;
+        }
+
+        /* Game Content */
+        .game-content {
+            flex: 1;
+            display: flex;
+            position: relative;
+        }
+
+        /* World Map */
+        .world-map {
+            flex: 1;
+            position: relative;
+            background: 
+                radial-gradient(ellipse at center, rgba(0, 100, 150, 0.1) 0%, transparent 70%),
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 500"><rect fill="%23111" width="1000" height="500"/></svg>');
+            background-size: cover;
+            overflow: hidden;
+        }
+
+        #citiesContainer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        #citiesContainer .city {
+            pointer-events: auto;
+        }
+
+        /* Grid Lines */
+        .map-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+        }
+
+        /* City Node */
+        .city {
+            position: absolute;
+            cursor: pointer;
+            transition: all 0.3s;
+            z-index: 10;
+            transform: translate(-50%, -50%);
+        }
+
+        .city-dot {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 3px solid;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .city.blue .city-dot { border-color: #00b4d8; box-shadow: 0 0 15px rgba(0, 180, 216, 0.5); }
+        .city.yellow .city-dot { border-color: #ffd60a; box-shadow: 0 0 15px rgba(255, 214, 10, 0.5); }
+        .city.black .city-dot { border-color: #aaa; box-shadow: 0 0 15px rgba(170, 170, 170, 0.5); }
+        .city.red .city-dot { border-color: #ff4444; box-shadow: 0 0 15px rgba(255, 68, 68, 0.5); }
+
+        .city:hover .city-dot {
+            transform: scale(1.3);
+        }
+
+        .city-name {
+            position: absolute;
+            top: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.7rem;
+            white-space: nowrap;
+            color: #888;
+            text-shadow: 0 0 5px #000;
+        }
+
+        /* Disease Cubes */
+        .disease-cubes {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 2px;
+        }
+
+        .disease-cube {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+            animation: cubeFloat 2s infinite ease-in-out;
+        }
+
+        .disease-cube.blue { background: #00b4d8; }
+        .disease-cube.yellow { background: #ffd60a; }
+        .disease-cube.black { background: #666; }
+        .disease-cube.red { background: #ff4444; }
+
+        @keyframes cubeFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
+        }
+
+        /* Research Station */
+        .research-station {
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 16px;
+        }
+
+        /* Player Tokens on Map */
+        .player-tokens {
+            position: absolute;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 3px;
+        }
+
+        .player-token {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Connection Lines */
+        .connections {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .connections svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .connection-line {
+            stroke: rgba(255,255,255,0.1);
+            stroke-width: 1;
+            fill: none;
+        }
+
+        /* Side Panel - Cures & Cards */
+        .side-panel {
+            width: 300px;
+            background: rgba(0,0,0,0.5);
+            border-left: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-section {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .panel-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            color: #888;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Cure Status */
+        .cures-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .cure-item {
+            text-align: center;
+            padding: 15px 10px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.05);
+            border: 2px solid transparent;
+        }
+
+        .cure-item.blue { border-color: rgba(0, 180, 216, 0.3); }
+        .cure-item.yellow { border-color: rgba(255, 214, 10, 0.3); }
+        .cure-item.black { border-color: rgba(170, 170, 170, 0.3); }
+        .cure-item.red { border-color: rgba(255, 68, 68, 0.3); }
+
+        .cure-item.cured {
+            background: rgba(0, 255, 136, 0.2);
+        }
+
+        .cure-item.cured .cure-icon {
+            color: #00ff88;
+        }
+
+        .cure-icon {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .cure-item.blue .cure-icon { color: #00b4d8; }
+        .cure-item.yellow .cure-icon { color: #ffd60a; }
+        .cure-item.black .cure-icon { color: #888; }
+        .cure-item.red .cure-icon { color: #ff4444; }
+
+        .cure-status {
+            font-size: 0.75rem;
+            color: #666;
+        }
+
+        .cure-item.cured .cure-status {
+            color: #00ff88;
+        }
+        
+        /* Game Room Code Display */
+        .game-room-code {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.5);
+            margin-top: 5px;
+            letter-spacing: 1px;
+        }
+        
+        .game-room-code span {
+            color: #00ff88;
+            font-weight: 700;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            letter-spacing: 3px;
+        }
+
+        /* Players Status */
+        .players-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .player-status-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+            border-left: 3px solid transparent;
+        }
+
+        .player-status-card.active {
+            background: rgba(0, 255, 136, 0.1);
+            border-left-color: #00ff88;
+        }
+
+        .player-status-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .player-status-info {
+            flex: 1;
+        }
+
+        .player-status-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .player-status-role {
+            font-size: 0.75rem;
+            color: #888;
+        }
+
+        .player-cards-count {
+            background: rgba(0,0,0,0.3);
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+        }
+
+        /* Game Log */
+        .game-log {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+
+        .log-entries {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        .log-entries::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .log-entries::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.2);
+            border-radius: 2px;
+        }
+
+        .log-entry {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            font-size: 0.85rem;
+            color: #888;
+        }
+
+        .log-entry .time {
+            color: #444;
+            font-size: 0.75rem;
+        }
+
+        .log-entry.infection { color: #ff6b6b; }
+        .log-entry.cure { color: #00ff88; }
+        .log-entry.outbreak { color: #ff4444; font-weight: 700; }
+
+        /* Game Over Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: linear-gradient(145deg, rgba(30,30,50,0.95) 0%, rgba(20,20,40,0.95) 100%);
+            border-radius: 25px;
+            padding: 50px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
+            max-width: 500px;
+        }
+
+        .modal-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .modal-title.win {
+            color: #00ff88;
+        }
+
+        .modal-title.lose {
+            color: #ff4444;
+        }
+
+        .modal-message {
+            color: #888;
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+        }
+
+        .modal-btn {
+            background: linear-gradient(135deg, #00ff88, #00b4d8);
+            border: none;
+            color: #000;
+            padding: 15px 40px;
+            border-radius: 10px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .modal-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* Settings Modal */
+        .settings-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .settings-modal.active {
+            display: flex;
+        }
+
+        .settings-content {
+            background: linear-gradient(145deg, rgba(30,30,50,0.98) 0%, rgba(20,20,40,0.98) 100%);
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .settings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .settings-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            color: #00b4d8;
+        }
+
+        .close-settings {
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 24px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .close-settings:hover {
+            color: #fff;
+        }
+
+        .setting-group {
+            margin-bottom: 25px;
+        }
+
+        .setting-label {
+            font-size: 0.95rem;
+            color: #888;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .setting-options {
+            display: flex;
+            gap: 10px;
+        }
+
+        .setting-option {
+            flex: 1;
+            padding: 15px;
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .setting-option:hover {
+            border-color: rgba(0, 180, 216, 0.5);
+        }
+
+        .setting-option.selected {
+            border-color: #00b4d8;
+            background: rgba(0, 180, 216, 0.1);
+        }
+
+        .setting-option-label {
+            font-size: 0.85rem;
+            color: #888;
+            margin-top: 5px;
+        }
+
+        .save-settings {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #00b4d8, #00ff88);
+            border: none;
+            border-radius: 10px;
+            color: #000;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+        }
+
+        .save-settings:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 180, 216, 0.3);
+        }
+
+        /* Infection Notification */
+        .infection-notification {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            background: linear-gradient(135deg, rgba(255, 0, 0, 0.95), rgba(150, 0, 0, 0.95));
+            border: 3px solid #ff4444;
+            border-radius: 20px;
+            padding: 30px 50px;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 50px rgba(255, 0, 0, 0.5);
+            text-align: center;
+            min-width: 300px;
+        }
+
+        .infection-notification.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .infection-notification .notification-icon {
+            font-size: 60px;
+            margin-bottom: 15px;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .infection-notification .notification-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 24px;
+            color: #fff;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        .infection-notification .infected-cities {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .infection-notification .infected-city {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 16px;
+            color: #fff;
+            border: 2px solid;
+        }
+
+        .infection-notification .infected-city.blue { border-color: #00b4d8; color: #00b4d8; }
+        .infection-notification .infected-city.yellow { border-color: #ffe66d; color: #ffe66d; }
+        .infection-notification .infected-city.black { border-color: #888; color: #888; }
+        .infection-notification .infected-city.red { border-color: #ff6b6b; color: #ff6b6b; }
+    </style>
+</head>
+<body>
+    <!-- ==================== LOBBY SCREEN ==================== -->
+    <div class="lobby-screen" id="lobbyScreen">
+        <!-- Header -->
+        <header class="lobby-header">
+            <div class="logo">
+                <div class="logo-icon">🌍</div>
+                <h1>PANDEMIC</h1>
+            </div>
+            
+            <div class="room-info">
+                <div class="room-code-display">
+                    <div class="room-code-label">KODE ROOM</div>
+                    <div class="room-code" id="roomCode">------</div>
+                </div>
+            </div>
+            
+            <button class="back-btn" onclick="exitRoom()">
+                <i class="fas fa-sign-out-alt"></i> Keluar
+            </button>
+        </header>
+
+        <!-- Content -->
+        <div class="lobby-content">
+            <!-- Join Section -->
+            <div class="join-section">
+                <h2 class="join-title"><i class="fas fa-qrcode"></i> SCAN UNTUK GABUNG</h2>
+                
+                <div class="qr-container">
+                    <div id="qrcode"></div>
+                </div>
+                
+                <div class="or-divider">
+                    <span>ATAU</span>
+                </div>
+                
+                <div class="join-url">
+                    <div class="join-url-label">Buka link berikut di HP:</div>
+                    <div class="join-url-text" id="joinUrl">-</div>
+                </div>
+            </div>
+
+            <!-- Players Section -->
+            <div class="players-section">
+                <div class="players-header">
+                    <h2 class="players-title"><i class="fas fa-users"></i> PEMAIN</h2>
+                    <div class="players-count"><span id="playerCount">0</span> / 10</div>
+                </div>
+                
+                <div class="players-grid" id="playersGrid">
+                    <!-- Empty Slots -->
+                    <div class="empty-slot"><i class="fas fa-user-plus"></i> Menunggu...</div>
+                    <div class="empty-slot"><i class="fas fa-user-plus"></i> Menunggu...</div>
+                    <div class="empty-slot"><i class="fas fa-user-plus"></i> Menunggu...</div>
+                    <div class="empty-slot"><i class="fas fa-user-plus"></i> Menunggu...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="lobby-footer">
+            <button class="settings-btn" onclick="openSettings()">
+                <i class="fas fa-cog"></i> Pengaturan
+            </button>
+            <button class="start-btn" id="startBtn" disabled onclick="startGame()">
+                <i class="fas fa-play"></i> MULAI GAME
+            </button>
+        </div>
+    </div>
+
+    <!-- ==================== GAME SCREEN ==================== -->
+    <div class="game-screen" id="gameScreen">
+        <!-- Game Header -->
+        <header class="game-header">
+            <div class="game-logo">
+                <span style="font-size: 30px;">🌍</span>
+                <h1>PANDEMIC</h1>
+                <div class="game-room-code">Room: <span id="gameRoomCode">------</span></div>
+            </div>
+
+            <!-- Game Stats -->
+            <div class="game-stats">
+                <!-- Outbreak Track -->
+                <div class="stat-item">
+                    <div class="stat-icon">💥</div>
+                    <div class="stat-info">
+                        <div class="stat-label">Outbreak</div>
+                        <div class="outbreak-track" id="outbreakTrack">
+                            <div class="outbreak-marker">0</div>
+                            <div class="outbreak-marker">1</div>
+                            <div class="outbreak-marker">2</div>
+                            <div class="outbreak-marker">3</div>
+                            <div class="outbreak-marker">4</div>
+                            <div class="outbreak-marker">5</div>
+                            <div class="outbreak-marker">6</div>
+                            <div class="outbreak-marker">7</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Infection Rate -->
+                <div class="stat-item">
+                    <div class="stat-icon">🦠</div>
+                    <div class="stat-info">
+                        <div class="stat-label">Infection Rate</div>
+                        <div class="infection-track" id="infectionTrack">
+                            <div class="infection-marker active">2</div>
+                            <div class="infection-marker">2</div>
+                            <div class="infection-marker">2</div>
+                            <div class="infection-marker">3</div>
+                            <div class="infection-marker">3</div>
+                            <div class="infection-marker">4</div>
+                            <div class="infection-marker">4</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cards Left -->
+                <div class="stat-item">
+                    <div class="stat-icon">🃏</div>
+                    <div class="stat-info">
+                        <div class="stat-label">Kartu Tersisa</div>
+                        <div class="stat-value safe" id="cardsLeft">48</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Current Turn -->
+            <div class="current-turn">
+                <div class="turn-avatar" id="turnAvatar" style="background: #ff6b6b;">🔬</div>
+                <div class="turn-info">
+                    <div class="turn-label">GILIRAN</div>
+                    <div class="turn-name" id="turnName">Menunggu...</div>
+                </div>
+                <div class="turn-actions" id="turnActions">4</div>
+            </div>
+        </header>
+
+        <!-- Game Content -->
+        <div class="game-content">
+            <!-- World Map -->
+            <div class="world-map" id="worldMap">
+                <div class="map-grid"></div>
+                
+                <!-- Connections SVG -->
+                <div class="connections">
+                    <svg id="connectionsSvg"></svg>
+                </div>
+                
+                <!-- Cities will be dynamically generated -->
+                <div id="citiesContainer"></div>
+            </div>
+
+            <!-- Side Panel -->
+            <div class="side-panel">
+                <!-- Cures Section -->
+                <div class="panel-section">
+                    <div class="panel-title"><i class="fas fa-flask"></i> STATUS OBAT</div>
+                    <div class="cures-grid">
+                        <div class="cure-item blue" id="cureBlue">
+                            <div class="cure-icon">🧪</div>
+                            <div class="cure-status">Belum</div>
+                        </div>
+                        <div class="cure-item yellow" id="cureYellow">
+                            <div class="cure-icon">🧪</div>
+                            <div class="cure-status">Belum</div>
+                        </div>
+                        <div class="cure-item black" id="cureBlack">
+                            <div class="cure-icon">🧪</div>
+                            <div class="cure-status">Belum</div>
+                        </div>
+                        <div class="cure-item red" id="cureRed">
+                            <div class="cure-icon">🧪</div>
+                            <div class="cure-status">Belum</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Players Section -->
+                <div class="panel-section">
+                    <div class="panel-title"><i class="fas fa-users"></i> PEMAIN</div>
+                    <div class="players-list" id="gamePlayers">
+                        <!-- Will be populated dynamically -->
+                    </div>
+                </div>
+
+                <!-- Game Log -->
+                <div class="panel-section game-log">
+                    <div class="panel-title"><i class="fas fa-scroll"></i> LOG GAME</div>
+                    <div class="log-entries" id="gameLog">
+                        <div class="log-entry">
+                            <span class="time">00:00</span> - Game dimulai!
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== SETTINGS MODAL ==================== -->
+    <div class="settings-modal" id="settingsModal">
+        <div class="settings-content">
+            <div class="settings-header">
+                <h2 class="settings-title"><i class="fas fa-cog"></i> Pengaturan Game</h2>
+                <button class="close-settings" onclick="closeSettings()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="setting-group">
+                <div class="setting-label">
+                    <i class="fas fa-skull-crossbones"></i> Tingkat Kesulitan
+                </div>
+                <div class="setting-options">
+                    <div class="setting-option selected" data-difficulty="easy" onclick="selectDifficulty(this)">
+                        <div>😊</div>
+                        <div>4 Epidemik</div>
+                        <div class="setting-option-label">Mudah</div>
+                    </div>
+                    <div class="setting-option" data-difficulty="medium" onclick="selectDifficulty(this)">
+                        <div>😐</div>
+                        <div>5 Epidemik</div>
+                        <div class="setting-option-label">Sedang</div>
+                    </div>
+                    <div class="setting-option" data-difficulty="hard" onclick="selectDifficulty(this)">
+                        <div>😈</div>
+                        <div>6 Epidemik</div>
+                        <div class="setting-option-label">Sulit</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="setting-group">
+                <div class="setting-label">
+                    <i class="fas fa-clock"></i> Batas Waktu per Giliran
+                </div>
+                <div class="setting-options">
+                    <div class="setting-option" data-timer="0" onclick="selectTimer(this)">
+                        <div>♾️</div>
+                        <div class="setting-option-label">Tanpa Batas</div>
+                    </div>
+                    <div class="setting-option selected" data-timer="60" onclick="selectTimer(this)">
+                        <div>60s</div>
+                        <div class="setting-option-label">1 Menit</div>
+                    </div>
+                    <div class="setting-option" data-timer="120" onclick="selectTimer(this)">
+                        <div>120s</div>
+                        <div class="setting-option-label">2 Menit</div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="save-settings" onclick="saveSettings()">
+                <i class="fas fa-save"></i> Simpan Pengaturan
+            </button>
+        </div>
+    </div>
+
+    <!-- ==================== GAME OVER MODAL ==================== -->
+    <div class="modal-overlay" id="gameOverModal">
+        <div class="modal-content">
+            <div class="modal-icon" id="modalIcon">🏆</div>
+            <h2 class="modal-title win" id="modalTitle">KEMENANGAN!</h2>
+            <p class="modal-message" id="modalMessage">Selamat! Kalian berhasil menemukan obat untuk semua penyakit!</p>
+            <button class="modal-btn" onclick="restartGame()">
+                <i class="fas fa-redo"></i> Main Lagi
+            </button>
+        </div>
+    </div>
+
+    <!-- ==================== INFECTION NOTIFICATION ==================== -->
+    <div class="infection-notification" id="infectionNotification">
+        <div class="notification-icon">🦠</div>
+        <div class="notification-title">KOTA TERINFEKSI!</div>
+        <div class="infected-cities" id="infectedCitiesList"></div>
+    </div>
+
+    <!-- Firebase SDK - HARUS URUT -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database-compat.js"></script>
+    
+    <!-- QR Code Library - Ganti dengan yang lebih reliable -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    
+    <!-- Firebase Config - INLINE untuk menghindari loading issue -->
+    <script>
+        // ==================== FIREBASE CONFIG ====================
+        const firebaseConfig = {
+            apiKey: "AIzaSyALIoCf7m_AYiE60cRHoyr7FaWFHydCjKs",
+            authDomain: "pandemic-1190d.firebaseapp.com",
+            databaseURL: "https://pandemic-1190d-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "pandemic-1190d",
+            storageBucket: "pandemic-1190d.firebasestorage.app",
+            messagingSenderId: "597342154698",
+            appId: "1:597342154698:web:2a5490f50fdb6813906933"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        const auth = firebase.auth();
+        const roomsRef = database.ref('rooms');
+
+        // ==================== AUTHENTICATION ====================
+        async function ensureAuth() {
+            if (!auth.currentUser) {
+                try {
+                    await auth.signInAnonymously();
+                    console.log('✅ Authenticated anonymously');
+                } catch (error) {
+                    console.error('❌ Authentication failed:', error);
+                    throw error;
+                }
+            }
+            return auth.currentUser;
+        }
+
+        // ==================== HELPER FUNCTIONS ====================
+        function generateRoomCode() {
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+            let code = '';
+            for (let i = 0; i < 6; i++) {
+                code += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return code;
+        }
+
+        function generatePlayerId() {
+            return 'player_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        }
+
+        function getTimestamp() {
+            return firebase.database.ServerValue.TIMESTAMP;
+        }
+
+        // ==================== GAME DATA ====================
+        const ROLES = {
+            MEDIC: { id: 'medic', name: 'Medic', color: '#ff6b6b', icon: '🏥', ability: 'Hapus semua kubus penyakit dengan 1 aksi.' },
+            SCIENTIST: { id: 'scientist', name: 'Scientist', color: '#4ecdc4', icon: '🔬', ability: 'Butuh 4 kartu untuk menemukan obat.' },
+            RESEARCHER: { id: 'researcher', name: 'Researcher', color: '#ffe66d', icon: '📚', ability: 'Bisa memberikan kartu apapun.' },
+            OPERATIONS_EXPERT: { id: 'operations_expert', name: 'Operations Expert', color: '#95e1d3', icon: '🔧', ability: 'Bangun Research Station gratis.' },
+            DISPATCHER: { id: 'dispatcher', name: 'Dispatcher', color: '#a8d8ea', icon: '📡', ability: 'Pindahkan pion pemain lain.' },
+            QUARANTINE_SPECIALIST: { id: 'quarantine_specialist', name: 'Quarantine Specialist', color: '#aa96da', icon: '🛡️', ability: 'Cegah infeksi di kota sekitar.' },
+            CONTINGENCY_PLANNER: { id: 'contingency_planner', name: 'Contingency Planner', color: '#fcbad3', icon: '📋', ability: 'Ambil Event dari discard.' },
+            GENERALIST: { id: 'generalist', name: 'Generalist', color: '#f38181', icon: '🎯', ability: '5 aksi per giliran.' },
+            FIELD_OPERATIVE: { id: 'field_operative', name: 'Field Operative', color: '#3d5a80', icon: '🕵️', ability: 'Simpan kubus sebagai sampel.' },
+            PILOT: { id: 'pilot', name: 'Pilot', color: '#98c1d9', icon: '✈️', ability: 'Terbang gratis sekali per giliran.' }
+        };
+
+        const CITIES = {
+            atlanta: { id: 'atlanta', name: 'Atlanta', color: 'blue', position: { x: 17, y: 38 }, connections: ['chicago', 'washington', 'miami'] },
+            chicago: { id: 'chicago', name: 'Chicago', color: 'blue', position: { x: 15, y: 30 }, connections: ['san_francisco', 'los_angeles', 'mexico_city', 'atlanta', 'montreal'] },
+            montreal: { id: 'montreal', name: 'Montreal', color: 'blue', position: { x: 20, y: 25 }, connections: ['chicago', 'new_york', 'washington'] },
+            new_york: { id: 'new_york', name: 'New York', color: 'blue', position: { x: 23, y: 30 }, connections: ['montreal', 'washington', 'london', 'madrid'] },
+            washington: { id: 'washington', name: 'Washington', color: 'blue', position: { x: 21, y: 35 }, connections: ['montreal', 'new_york', 'atlanta', 'miami'] },
+            san_francisco: { id: 'san_francisco', name: 'San Francisco', color: 'blue', position: { x: 8, y: 35 }, connections: ['tokyo', 'manila', 'los_angeles', 'chicago'] },
+            london: { id: 'london', name: 'London', color: 'blue', position: { x: 40, y: 22 }, connections: ['new_york', 'madrid', 'paris', 'essen'] },
+            madrid: { id: 'madrid', name: 'Madrid', color: 'blue', position: { x: 38, y: 35 }, connections: ['new_york', 'london', 'paris', 'sao_paulo', 'algiers'] },
+            paris: { id: 'paris', name: 'Paris', color: 'blue', position: { x: 43, y: 28 }, connections: ['london', 'madrid', 'essen', 'milan', 'algiers'] },
+            essen: { id: 'essen', name: 'Essen', color: 'blue', position: { x: 45, y: 20 }, connections: ['london', 'paris', 'milan', 'st_petersburg'] },
+            milan: { id: 'milan', name: 'Milan', color: 'blue', position: { x: 47, y: 28 }, connections: ['paris', 'essen', 'istanbul'] },
+            st_petersburg: { id: 'st_petersburg', name: 'St. Petersburg', color: 'blue', position: { x: 52, y: 15 }, connections: ['essen', 'moscow', 'istanbul'] },
+            los_angeles: { id: 'los_angeles', name: 'Los Angeles', color: 'yellow', position: { x: 10, y: 42 }, connections: ['san_francisco', 'chicago', 'mexico_city', 'sydney'] },
+            mexico_city: { id: 'mexico_city', name: 'Mexico City', color: 'yellow', position: { x: 13, y: 48 }, connections: ['los_angeles', 'chicago', 'miami', 'bogota', 'lima'] },
+            miami: { id: 'miami', name: 'Miami', color: 'yellow', position: { x: 19, y: 45 }, connections: ['washington', 'atlanta', 'mexico_city', 'bogota'] },
+            bogota: { id: 'bogota', name: 'Bogota', color: 'yellow', position: { x: 18, y: 58 }, connections: ['miami', 'mexico_city', 'lima', 'sao_paulo', 'buenos_aires'] },
+            lima: { id: 'lima', name: 'Lima', color: 'yellow', position: { x: 15, y: 68 }, connections: ['mexico_city', 'bogota', 'santiago'] },
+            santiago: { id: 'santiago', name: 'Santiago', color: 'yellow', position: { x: 17, y: 80 }, connections: ['lima'] },
+            buenos_aires: { id: 'buenos_aires', name: 'Buenos Aires', color: 'yellow', position: { x: 23, y: 78 }, connections: ['bogota', 'sao_paulo'] },
+            sao_paulo: { id: 'sao_paulo', name: 'Sao Paulo', color: 'yellow', position: { x: 27, y: 70 }, connections: ['bogota', 'buenos_aires', 'madrid', 'lagos'] },
+            lagos: { id: 'lagos', name: 'Lagos', color: 'yellow', position: { x: 42, y: 55 }, connections: ['sao_paulo', 'khartoum', 'kinshasa'] },
+            kinshasa: { id: 'kinshasa', name: 'Kinshasa', color: 'yellow', position: { x: 45, y: 65 }, connections: ['lagos', 'khartoum', 'johannesburg'] },
+            johannesburg: { id: 'johannesburg', name: 'Johannesburg', color: 'yellow', position: { x: 50, y: 75 }, connections: ['kinshasa', 'khartoum'] },
+            khartoum: { id: 'khartoum', name: 'Khartoum', color: 'yellow', position: { x: 52, y: 52 }, connections: ['lagos', 'kinshasa', 'johannesburg', 'cairo'] },
+            algiers: { id: 'algiers', name: 'Algiers', color: 'black', position: { x: 42, y: 40 }, connections: ['madrid', 'paris', 'istanbul', 'cairo'] },
+            cairo: { id: 'cairo', name: 'Cairo', color: 'black', position: { x: 50, y: 42 }, connections: ['algiers', 'istanbul', 'baghdad', 'riyadh', 'khartoum'] },
+            istanbul: { id: 'istanbul', name: 'Istanbul', color: 'black', position: { x: 50, y: 32 }, connections: ['milan', 'st_petersburg', 'algiers', 'cairo', 'baghdad', 'moscow'] },
+            moscow: { id: 'moscow', name: 'Moscow', color: 'black', position: { x: 55, y: 20 }, connections: ['st_petersburg', 'istanbul', 'tehran'] },
+            baghdad: { id: 'baghdad', name: 'Baghdad', color: 'black', position: { x: 55, y: 38 }, connections: ['istanbul', 'cairo', 'riyadh', 'karachi', 'tehran'] },
+            riyadh: { id: 'riyadh', name: 'Riyadh', color: 'black', position: { x: 56, y: 48 }, connections: ['cairo', 'baghdad', 'karachi'] },
+            tehran: { id: 'tehran', name: 'Tehran', color: 'black', position: { x: 60, y: 30 }, connections: ['moscow', 'baghdad', 'karachi', 'delhi'] },
+            karachi: { id: 'karachi', name: 'Karachi', color: 'black', position: { x: 62, y: 42 }, connections: ['baghdad', 'riyadh', 'tehran', 'delhi', 'mumbai'] },
+            mumbai: { id: 'mumbai', name: 'Mumbai', color: 'black', position: { x: 64, y: 50 }, connections: ['karachi', 'delhi', 'chennai'] },
+            delhi: { id: 'delhi', name: 'Delhi', color: 'black', position: { x: 66, y: 38 }, connections: ['tehran', 'karachi', 'mumbai', 'chennai', 'kolkata'] },
+            chennai: { id: 'chennai', name: 'Chennai', color: 'black', position: { x: 68, y: 55 }, connections: ['mumbai', 'delhi', 'kolkata', 'bangkok', 'jakarta'] },
+            kolkata: { id: 'kolkata', name: 'Kolkata', color: 'black', position: { x: 70, y: 42 }, connections: ['delhi', 'chennai', 'bangkok', 'hong_kong'] },
+            bangkok: { id: 'bangkok', name: 'Bangkok', color: 'red', position: { x: 73, y: 50 }, connections: ['chennai', 'kolkata', 'hong_kong', 'ho_chi_minh', 'jakarta'] },
+            hong_kong: { id: 'hong_kong', name: 'Hong Kong', color: 'red', position: { x: 77, y: 42 }, connections: ['kolkata', 'bangkok', 'ho_chi_minh', 'manila', 'taipei', 'shanghai'] },
+            ho_chi_minh: { id: 'ho_chi_minh', name: 'Ho Chi Minh', color: 'red', position: { x: 76, y: 55 }, connections: ['bangkok', 'hong_kong', 'manila', 'jakarta'] },
+            jakarta: { id: 'jakarta', name: 'Jakarta', color: 'red', position: { x: 74, y: 65 }, connections: ['chennai', 'bangkok', 'ho_chi_minh', 'sydney'] },
+            manila: { id: 'manila', name: 'Manila', color: 'red', position: { x: 82, y: 52 }, connections: ['san_francisco', 'hong_kong', 'ho_chi_minh', 'sydney', 'taipei'] },
+            taipei: { id: 'taipei', name: 'Taipei', color: 'red', position: { x: 82, y: 40 }, connections: ['hong_kong', 'manila', 'shanghai', 'osaka'] },
+            shanghai: { id: 'shanghai', name: 'Shanghai', color: 'red', position: { x: 78, y: 35 }, connections: ['hong_kong', 'taipei', 'beijing', 'seoul', 'tokyo'] },
+            beijing: { id: 'beijing', name: 'Beijing', color: 'red', position: { x: 76, y: 28 }, connections: ['shanghai', 'seoul'] },
+            seoul: { id: 'seoul', name: 'Seoul', color: 'red', position: { x: 82, y: 28 }, connections: ['beijing', 'shanghai', 'tokyo'] },
+            tokyo: { id: 'tokyo', name: 'Tokyo', color: 'red', position: { x: 88, y: 32 }, connections: ['san_francisco', 'shanghai', 'seoul', 'osaka'] },
+            osaka: { id: 'osaka', name: 'Osaka', color: 'red', position: { x: 87, y: 40 }, connections: ['tokyo', 'taipei'] },
+            sydney: { id: 'sydney', name: 'Sydney', color: 'red', position: { x: 88, y: 75 }, connections: ['los_angeles', 'jakarta', 'manila'] }
+        };
+
+        const EVENT_CARDS = [
+            { id: 'airlift', name: 'Airlift', icon: '✈️' },
+            { id: 'government_grant', name: 'Government Grant', icon: '🏛️' },
+            { id: 'one_quiet_night', name: 'One Quiet Night', icon: '🌙' },
+            { id: 'forecast', name: 'Forecast', icon: '🔮' },
+            { id: 'resilient_population', name: 'Resilient Population', icon: '💪' }
+        ];
+
+        const INFECTION_RATE_TRACK = [2, 2, 2, 3, 3, 4, 4];
+
+        const DIFFICULTY = {
+            easy: { epidemics: 4, name: 'Mudah' },
+            medium: { epidemics: 5, name: 'Sedang' },
+            hard: { epidemics: 6, name: 'Sulit' }
+        };
+
+        console.log('🔥 Firebase & Game Data Loaded!');
+    </script>
+    
+    <!-- Host Logic -->
+    <script>
+        // ==================== HOST.JS ====================
+        let currentRoomCode = null;
+        let currentGameState = null;
+        let playersData = {};
+        let gameSettings = {
+            difficulty: 'easy',
+            turnTimer: 60
+        };
+
+        // ==================== INITIALIZATION ====================
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🖥️ Host Display Initialized');
+            initializeHost();
+        });
+
+        async function initializeHost() {
+            try {
+                // Authenticate first
+                await ensureAuth();
+                
+                // Generate room code
+                currentRoomCode = generateRoomCode();
+                
+                // Create room in Firebase
+                const roomData = {
+                    code: currentRoomCode,
+                    status: 'lobby',
+                    createdAt: getTimestamp(),
+                    settings: gameSettings,
+                    players: {}
+                };
+                
+                await roomsRef.child(currentRoomCode).set(roomData);
+                console.log('✅ Room created:', currentRoomCode);
+                
+                // Display room code
+                document.getElementById('roomCode').textContent = currentRoomCode;
+                
+                // Generate QR Code
+                generateQRCode();
+                
+                // Set join URL - get directory from current path
+                const currentPath = window.location.pathname;
+                const directory = currentPath.substring(0, currentPath.lastIndexOf('/'));
+                const joinUrl = `${window.location.origin}${directory}/player.html?room=${currentRoomCode}`;
+                document.getElementById('joinUrl').textContent = joinUrl;
+                
+                // Listen to room changes
+                roomsRef.child(currentRoomCode).on('value', (snapshot) => {
+                    const room = snapshot.val();
+                    if (room) {
+                        handleRoomUpdate(room);
+                    }
+                });
+                
+                // Listen to players
+                roomsRef.child(currentRoomCode).child('players').on('value', (snapshot) => {
+                    handlePlayersUpdate(snapshot.val());
+                });
+                
+            } catch (error) {
+                console.error('❌ Error initializing host:', error);
+                alert('Gagal membuat room: ' + error.message);
+            }
+        }
+
+        function generateQRCode() {
+            // Get directory from current path to support subdirectory hosting
+            const currentPath = window.location.pathname;
+            const directory = currentPath.substring(0, currentPath.lastIndexOf('/'));
+            const joinUrl = `${window.location.origin}${directory}/player.html?room=${currentRoomCode}`;
+            const qrContainer = document.getElementById('qrcode');
+            
+            // Clear previous QR
+            qrContainer.innerHTML = '';
+            
+            try {
+                // Using QRCode.js library
+                new QRCode(qrContainer, {
+                    text: joinUrl,
+                    width: 180,
+                    height: 180,
+                    colorDark: '#000000',
+                    colorLight: '#ffffff',
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+                console.log('✅ QR Code generated');
+            } catch (error) {
+                console.error('❌ QR Code error:', error);
+                qrContainer.innerHTML = '<p style="color: #888; font-size: 12px;">QR Code error</p>';
+            }
+        }
+
+        // Track previous infection discard to detect new infections
+        let previousInfectionDiscard = [];
+
+        function handleRoomUpdate(roomData) {
+            if (!roomData) {
+                console.log('Room deleted');
+                return;
+            }
+            
+            if (roomData.status === 'playing' && roomData.gameState) {
+                const newGameState = roomData.gameState;
+                
+                // Check for newly infected cities
+                if (newGameState.infectionDiscard && Array.isArray(newGameState.infectionDiscard)) {
+                    const newInfections = newGameState.infectionDiscard.filter(
+                        cityId => !previousInfectionDiscard.includes(cityId)
+                    );
+                    
+                    if (newInfections.length > 0 && currentGameState) {
+                        // Show notification for new infections
+                        showInfectionNotification(newInfections);
+                    }
+                    
+                    // Update previous state
+                    previousInfectionDiscard = [...newGameState.infectionDiscard];
+                }
+                
+                currentGameState = newGameState;
+                showGameScreen();
+                updateGameDisplay();
+            }
+        }
+
+        // Show infection notification on host screen
+        function showInfectionNotification(cityIds) {
+            const notification = document.getElementById('infectionNotification');
+            const citiesList = document.getElementById('infectedCitiesList');
+            
+            // Build city elements
+            let html = '';
+            cityIds.forEach(cityId => {
+                const city = CITIES[cityId];
+                if (city) {
+                    html += `<div class="infected-city ${city.color}">${city.name}</div>`;
+                }
+            });
+            
+            citiesList.innerHTML = html;
+            
+            // Show notification
+            notification.classList.add('show');
+            
+            // Hide after 3 seconds
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        function handlePlayersUpdate(players) {
+            playersData = players || {};
+            const playerCount = Object.keys(playersData).length;
+            
+            document.getElementById('playerCount').textContent = playerCount;
+            updatePlayersGrid();
+            
+            // Enable start button
+            const startBtn = document.getElementById('startBtn');
+            const allReady = playerCount >= 2 && Object.values(playersData).every(p => p.ready);
+            startBtn.disabled = !(playerCount >= 2 && allReady);
+        }
+
+        function updatePlayersGrid() {
+            const grid = document.getElementById('playersGrid');
+            const players = Object.values(playersData);
+            
+            let html = '';
+            
+            const roleColors = ['#ff6b6b', '#4ecdc4', '#ffe66d', '#95e1d3', '#a8d8ea', '#aa96da', '#fcbad3', '#f38181', '#3d5a80', '#98c1d9'];
+            
+            players.forEach((player, index) => {
+                html += `
+                    <div class="player-card ${player.ready ? 'ready' : ''}" style="animation-delay: ${index * 0.1}s">
+                        <div class="player-avatar" style="background: ${roleColors[index % roleColors.length]}">
+                            ${player.avatar || '👤'}
+                        </div>
+                        <div class="player-info">
+                            <div class="player-name">${escapeHtml(player.name)}</div>
+                            <div class="player-role">${player.ready ? 'Siap!' : 'Menunggu...'}</div>
+                        </div>
+                        <div class="player-status">${player.ready ? '✅' : '⏳'}</div>
+                    </div>
+                `;
+            });
+            
+            // Empty slots
+            const emptySlots = Math.max(0, 4 - players.length);
+            for (let i = 0; i < emptySlots; i++) {
+                html += `<div class="empty-slot"><i class="fas fa-user-plus"></i> Menunggu...</div>`;
+            }
+            
+            grid.innerHTML = html;
+        }
+
+        // ==================== SETTINGS ====================
+        function openSettings() {
+            document.getElementById('settingsModal').classList.add('active');
+        }
+
+        function closeSettings() {
+            document.getElementById('settingsModal').classList.remove('active');
+        }
+
+        function selectDifficulty(element) {
+            document.querySelectorAll('.setting-group:first-of-type .setting-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            gameSettings.difficulty = element.dataset.difficulty;
+        }
+
+        function selectTimer(element) {
+            document.querySelectorAll('.setting-group:last-of-type .setting-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            gameSettings.turnTimer = parseInt(element.dataset.timer);
+        }
+
+        async function saveSettings() {
+            try {
+                await roomsRef.child(currentRoomCode).child('settings').update(gameSettings);
+                closeSettings();
+                showToast('Pengaturan disimpan!', 'success');
+            } catch (error) {
+                console.error('Error saving settings:', error);
+                showToast('Gagal menyimpan', 'error');
+            }
+        }
+
+        // ==================== START GAME ====================
+        async function startGame() {
+            const players = Object.entries(playersData);
+            
+            if (players.length < 2) {
+                showToast('Minimal 2 pemain!', 'error');
+                return;
+            }
+            
+            try {
+                showToast('Memulai game...', 'info');
+                
+                // ✅ FIX: Fetch settings from Firebase (not local variable)
+                const settingsSnapshot = await roomsRef.child(currentRoomCode).child('settings').once('value');
+                const savedSettings = settingsSnapshot.val() || {};
+                
+                const finalSettings = {
+                    difficulty: savedSettings.difficulty || gameSettings.difficulty || 'easy',
+                    turnTimer: savedSettings.turnTimer !== undefined ? savedSettings.turnTimer : (gameSettings.turnTimer || 60)
+                };
+                
+                console.log('🎮 Starting game with settings:', finalSettings);
+                
+                const gameState = initializeGameState(players, finalSettings);
+                
+                await roomsRef.child(currentRoomCode).update({
+                    status: 'playing',
+                    gameState: gameState
+                });
+                
+                console.log('🎮 Game Started!');
+                
+            } catch (error) {
+                console.error('Error starting game:', error);
+                showToast('Gagal memulai game', 'error');
+            }
+        }
+
+        function initializeGameState(players, settings = {}) {
+            // ✅ FIX: Use passed settings, fallback to global
+            const finalSettings = {
+                difficulty: settings.difficulty || gameSettings.difficulty || 'easy',
+                turnTimer: settings.turnTimer !== undefined ? settings.turnTimer : (gameSettings.turnTimer || 60)
+            };
+            
+            // ✅ FIX: Better role randomization
+            const availableRoles = Object.values(ROLES);
+            
+            // Proper Fisher-Yates shuffle with better randomization
+            for (let i = availableRoles.length - 1; i > 0; i--) {
+                const randomValue = (Math.random() + Math.random() + Date.now() % 1000 / 1000) / 3;
+                const j = Math.floor(randomValue * (i + 1));
+                [availableRoles[i], availableRoles[j]] = [availableRoles[j], availableRoles[i]];
+            }
+            
+            // Additional shuffle
+            for (let i = 0; i < 3; i++) {
+                const idx1 = Math.floor(Math.random() * availableRoles.length);
+                const idx2 = Math.floor(Math.random() * availableRoles.length);
+                [availableRoles[idx1], availableRoles[idx2]] = [availableRoles[idx2], availableRoles[idx1]];
+            }
+            
+            console.log('🎭 Shuffled roles:', availableRoles.map(r => r.name));
+            
+            const playersState = {};
+            players.forEach(([playerId, playerData], index) => {
+                const role = availableRoles[index % availableRoles.length];
+                playersState[playerId] = {
+                    ...playerData,
+                    role: role,
+                    location: 'atlanta',
+                    cards: [],
+                    actionsLeft: role.id === 'generalist' ? 5 : 4
+                };
+            });
+            
+            // Initialize cities
+            const citiesState = {};
+            Object.keys(CITIES).forEach(cityId => {
+                citiesState[cityId] = {
+                    disease: { blue: 0, yellow: 0, black: 0, red: 0 },
+                    hasResearchStation: cityId === 'atlanta'
+                };
+            });
+            
+            // Create decks
+            const infectionDeck = shuffleArray(Object.keys(CITIES));
+            const infectionDiscard = [];
+            
+            // Initial infection
+            for (let cubes = 3; cubes >= 1; cubes--) {
+                for (let i = 0; i < 3; i++) {
+                    if (infectionDeck.length > 0) {
+                        const cityId = infectionDeck.pop();
+                        const city = CITIES[cityId];
+                        citiesState[cityId].disease[city.color] = cubes;
+                        infectionDiscard.push(cityId);
+                    }
+                }
+            }
+            
+            // Player deck
+            let playerDeck = [];
+            Object.keys(CITIES).forEach(cityId => {
+                playerDeck.push({ type: 'city', id: cityId, name: CITIES[cityId].name, color: CITIES[cityId].color });
+            });
+            EVENT_CARDS.forEach(event => {
+                playerDeck.push({ type: 'event', ...event });
+            });
+            playerDeck = shuffleArray(playerDeck);
+            
+            // Deal cards
+            const cardsPerPlayer = players.length <= 2 ? 4 : players.length <= 3 ? 3 : 2;
+            Object.keys(playersState).forEach(playerId => {
+                for (let i = 0; i < cardsPerPlayer; i++) {
+                    if (playerDeck.length > 0) {
+                        playersState[playerId].cards.push(playerDeck.pop());
+                    }
+                }
+            });
+            
+            // Add epidemics - ✅ FIX: Use finalSettings
+            const epidemicCount = DIFFICULTY[finalSettings.difficulty]?.epidemics || 4;
+            console.log(`⚠️ Adding ${epidemicCount} epidemic cards (${finalSettings.difficulty} difficulty)`);
+            const pileSize = Math.floor(playerDeck.length / epidemicCount);
+            const piles = [];
+            
+            for (let i = 0; i < epidemicCount; i++) {
+                const start = i * pileSize;
+                const end = i === epidemicCount - 1 ? playerDeck.length : (i + 1) * pileSize;
+                const pile = playerDeck.slice(start, end);
+                pile.push({ type: 'epidemic', id: `epidemic_${i}`, name: 'EPIDEMIC' });
+                piles.push(shuffleArray(pile));
+            }
+            playerDeck = piles.flat();
+            
+            // Turn order
+            const turnOrder = shuffleArray(Object.keys(playersState));
+            
+            return {
+                phase: 'action',
+                currentPlayerIndex: 0,
+                turnOrder: turnOrder,
+                round: 1,
+                players: playersState,
+                cities: citiesState,
+                playerDeck: playerDeck,
+                playerDiscard: [],
+                infectionDeck: infectionDeck,
+                infectionDiscard: infectionDiscard,
+                outbreakCount: 0,
+                infectionRateIndex: 0,
+                cures: { blue: false, yellow: false, black: false, red: false },
+                eradicated: { blue: false, yellow: false, black: false, red: false },
+                cubesLeft: { blue: 24, yellow: 24, black: 24, red: 24 },
+                researchStations: 5,
+                gameOver: false,
+                gameResult: null,
+                log: [
+                    { time: Date.now(), message: '🎮 Game dimulai!', type: 'info' },
+                    { time: Date.now(), message: `⚙️ Kesulitan: ${DIFFICULTY[finalSettings.difficulty]?.name || 'Mudah'} (${epidemicCount} epidemik)`, type: 'info' }
+                ],
+                settings: finalSettings,
+                lastUpdate: Date.now()
+            };
+        }
+
+        // ==================== GAME DISPLAY ====================
+        function showGameScreen() {
+            document.getElementById('lobbyScreen').classList.add('hidden');
+            document.getElementById('gameScreen').classList.add('active');
+            document.getElementById('gameRoomCode').textContent = currentRoomCode;
+            renderCities();
+        }
+
+        function updateGameDisplay() {
+            if (!currentGameState) return;
+            
+            // Update outbreak track
+            const outbreakMarkers = document.querySelectorAll('#outbreakTrack .outbreak-marker');
+            outbreakMarkers.forEach((marker, index) => {
+                marker.classList.toggle('active', index < currentGameState.outbreakCount);
+            });
+            
+            // Update infection track
+            const infectionMarkers = document.querySelectorAll('#infectionTrack .infection-marker');
+            infectionMarkers.forEach((marker, index) => {
+                marker.classList.toggle('active', index === currentGameState.infectionRateIndex);
+            });
+            
+            // Update cards left
+            const cardsLeft = document.getElementById('cardsLeft');
+            cardsLeft.textContent = currentGameState.playerDeck.length;
+            
+            // Update current turn
+            const currentPlayerId = currentGameState.turnOrder[currentGameState.currentPlayerIndex];
+            const currentPlayer = currentGameState.players[currentPlayerId];
+            if (currentPlayer) {
+                document.getElementById('turnAvatar').textContent = currentPlayer.avatar;
+                document.getElementById('turnName').textContent = currentPlayer.name;
+                document.getElementById('turnActions').textContent = currentPlayer.actionsLeft;
+            }
+            
+            // Update cures
+            ['blue', 'yellow', 'black', 'red'].forEach(color => {
+                const el = document.getElementById(`cure${color.charAt(0).toUpperCase() + color.slice(1)}`);
+                if (currentGameState.cures[color]) {
+                    el.classList.add('cured');
+                    el.querySelector('.cure-icon').textContent = '✅';
+                    el.querySelector('.cure-status').textContent = 'Cured!';
+                }
+            });
+            
+            // Update players panel
+            const playersPanel = document.getElementById('gamePlayers');
+            let html = '';
+            currentGameState.turnOrder.forEach(playerId => {
+                const player = currentGameState.players[playerId];
+                const isActive = playerId === currentPlayerId;
+                html += `
+                    <div class="player-status-card ${isActive ? 'active' : ''}">
+                        <div class="player-status-avatar" style="background: ${player.role.color}">${player.avatar}</div>
+                        <div class="player-status-info">
+                            <div class="player-status-name">${escapeHtml(player.name)}</div>
+                            <div class="player-status-role">${player.role.name}</div>
+                        </div>
+                        <div class="player-cards-count">🃏 ${player.cards.length}</div>
+                    </div>
+                `;
+            });
+            playersPanel.innerHTML = html;
+            
+            // Update cities
+            updateCitiesDisplay();
+            
+            // Update log
+            const logContainer = document.getElementById('gameLog');
+            const logs = (currentGameState.log || []).slice(-15).reverse();
+            logContainer.innerHTML = logs.map(log => `
+                <div class="log-entry ${log.type || ''}">
+                    <span class="time">${new Date(log.time).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}</span> - ${log.message}
+                </div>
+            `).join('');
+        }
+
+        function renderCities() {
+            const container = document.getElementById('citiesContainer');
+            const svg = document.getElementById('connectionsSvg');
+            
+            container.innerHTML = '';
+            svg.innerHTML = '';
+            
+            // Draw connections
+            const drawn = new Set();
+            Object.entries(CITIES).forEach(([cityId, city]) => {
+                city.connections.forEach(connId => {
+                    const key = [cityId, connId].sort().join('-');
+                    if (!drawn.has(key) && CITIES[connId]) {
+                        drawn.add(key);
+                        const conn = CITIES[connId];
+                        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                        line.setAttribute('x1', `${city.position.x}%`);
+                        line.setAttribute('y1', `${city.position.y}%`);
+                        line.setAttribute('x2', `${conn.position.x}%`);
+                        line.setAttribute('y2', `${conn.position.y}%`);
+                        line.setAttribute('class', 'connection-line');
+                        svg.appendChild(line);
+                    }
+                });
+            });
+            
+            // Draw cities
+            Object.entries(CITIES).forEach(([cityId, city]) => {
+                const el = document.createElement('div');
+                el.className = `city ${city.color}`;
+                el.id = `city-${cityId}`;
+                el.style.left = `${city.position.x}%`;
+                el.style.top = `${city.position.y}%`;
+                el.innerHTML = `
+                    <div class="disease-cubes" id="cubes-${cityId}"></div>
+                    <div class="city-dot"></div>
+                    <div class="city-name">${city.name}</div>
+                    <div class="research-station" id="station-${cityId}" style="display: none;">🏥</div>
+                    <div class="player-tokens" id="tokens-${cityId}"></div>
+                `;
+                container.appendChild(el);
+            });
+        }
+
+        function updateCitiesDisplay() {
+            if (!currentGameState) return;
+            
+            Object.entries(currentGameState.cities).forEach(([cityId, state]) => {
+                // Disease cubes
+                const cubes = document.getElementById(`cubes-${cityId}`);
+                if (cubes) {
+                    let html = '';
+                    ['blue', 'yellow', 'black', 'red'].forEach(color => {
+                        for (let i = 0; i < state.disease[color]; i++) {
+                            html += `<div class="disease-cube ${color}"></div>`;
+                        }
+                    });
+                    cubes.innerHTML = html;
+                }
+                
+                // Research station
+                const station = document.getElementById(`station-${cityId}`);
+                if (station) {
+                    station.style.display = state.hasResearchStation ? 'block' : 'none';
+                }
+            });
+            
+            // Player tokens
+            Object.keys(CITIES).forEach(cityId => {
+                const tokens = document.getElementById(`tokens-${cityId}`);
+                if (tokens) tokens.innerHTML = '';
+            });
+            
+            Object.entries(currentGameState.players).forEach(([playerId, player]) => {
+                const tokens = document.getElementById(`tokens-${player.location}`);
+                if (tokens) {
+                    const token = document.createElement('div');
+                    token.className = 'player-token';
+                    token.style.background = player.role.color;
+                    token.textContent = player.avatar;
+                    tokens.appendChild(token);
+                }
+            });
+        }
+
+        // ==================== EXIT ====================
+        async function exitRoom() {
+            if (confirm('Yakin keluar? Room akan dihapus.')) {
+                try {
+                    await roomsRef.child(currentRoomCode).remove();
+                    window.location.href = 'index.html';
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            }
+        }
+
+        function restartGame() {
+            location.reload();
+        }
+
+        // ==================== UTILITIES ====================
+        function shuffleArray(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function showToast(message, type = 'info') {
+            let toast = document.getElementById('hostToast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'hostToast';
+                toast.innerHTML = `<i class="fas fa-info-circle"></i><span></span>`;
+                toast.style.cssText = `
+                    position: fixed; bottom: 30px; left: 50%;
+                    transform: translateX(-50%) translateY(100px);
+                    background: rgba(0,0,0,0.9); border-radius: 12px;
+                    padding: 15px 25px; z-index: 9999;
+                    display: flex; align-items: center; gap: 10px;
+                    transition: transform 0.3s; border: 1px solid rgba(255,255,255,0.2);
+                `;
+                document.body.appendChild(toast);
+            }
+            
+            const colors = { success: '#00ff88', error: '#ff4444', info: '#00b4d8', warning: '#ffaa00' };
+            toast.style.borderColor = colors[type] || colors.info;
+            toast.querySelector('i').style.color = colors[type] || colors.info;
+            toast.querySelector('span').textContent = message;
+            
+            toast.style.transform = 'translateX(-50%) translateY(0)';
+            setTimeout(() => {
+                toast.style.transform = 'translateX(-50%) translateY(100px)';
+            }, 3000);
+        }
+
+        // Debug
+        window.debugAddPlayers = async (count = 2) => {
+            const names = ['Alice', 'Bob', 'Charlie', 'Diana', 'Eve'];
+            const avatars = ['🧑‍🔬', '👨‍⚕️', '👩‍🔬', '🧑‍✈️', '👷'];
+            
+            for (let i = 0; i < count; i++) {
+                const playerId = generatePlayerId();
+                await roomsRef.child(currentRoomCode).child('players').child(playerId).set({
+                    id: playerId,
+                    name: names[i],
+                    avatar: avatars[i],
+                    ready: true,
+                    joinedAt: Date.now()
+                });
+            }
+            console.log(`Added ${count} test players`);
+        };
+
+        console.log('🖥️ Host.js Ready!');
+        console.log('💡 Debug: ketik debugAddPlayers(2) di console untuk menambah pemain test');
+    </script>
+</body>
+</html>

@@ -1,0 +1,1275 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📖 Pandemic - Cara Bermain</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #fff;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(0,0,0,0.5);
+            padding: 20px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            font-size: 35px;
+        }
+
+        .logo h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            background: linear-gradient(135deg, #00ff88, #00b4d8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #fff;
+            padding: 12px 25px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: rgba(255,255,255,0.15);
+            border-color: #00b4d8;
+        }
+
+        /* Main Content */
+        .main-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Page Title */
+        .page-title {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .page-title h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #00ff88, #00b4d8, #ff006e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .page-title p {
+            color: #888;
+            font-size: 1.1rem;
+        }
+
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 40px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #888;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .nav-tab:hover {
+            border-color: rgba(0, 180, 216, 0.5);
+            color: #fff;
+        }
+
+        .nav-tab.active {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.2), rgba(0, 180, 216, 0.2));
+            border-color: #00ff88;
+            color: #00ff88;
+        }
+
+        /* Section */
+        .section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            color: #00b4d8;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .section-title i {
+            font-size: 1.3rem;
+        }
+
+        /* Card */
+        .card {
+            background: linear-gradient(145deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%);
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 30px;
+            margin-bottom: 25px;
+        }
+
+        .card-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card p {
+            color: #aaa;
+            margin-bottom: 15px;
+        }
+
+        .card ul, .card ol {
+            color: #aaa;
+            padding-left: 25px;
+            margin-bottom: 15px;
+        }
+
+        .card li {
+            margin-bottom: 10px;
+        }
+
+        .card li strong {
+            color: #fff;
+        }
+
+        /* Highlight Box */
+        .highlight-box {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .highlight-box.warning {
+            background: rgba(255, 170, 0, 0.1);
+            border-color: rgba(255, 170, 0, 0.3);
+        }
+
+        .highlight-box.danger {
+            background: rgba(255, 68, 68, 0.1);
+            border-color: rgba(255, 68, 68, 0.3);
+        }
+
+        .highlight-box-title {
+            font-weight: 700;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .highlight-box.warning .highlight-box-title {
+            color: #ffaa00;
+        }
+
+        .highlight-box.danger .highlight-box-title {
+            color: #ff4444;
+        }
+
+        /* Role Cards Grid */
+        .roles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .role-card {
+            background: rgba(0,0,0,0.3);
+            border-radius: 15px;
+            padding: 25px;
+            border-left: 4px solid;
+            transition: all 0.3s;
+        }
+
+        .role-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .role-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .role-icon {
+            font-size: 2rem;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.1);
+            border-radius: 12px;
+        }
+
+        .role-name {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+        }
+
+        .role-ability {
+            color: #888;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* Actions Grid */
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 15px;
+        }
+
+        .action-card {
+            background: rgba(0,0,0,0.3);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .action-icon {
+            font-size: 1.5rem;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            flex-shrink: 0;
+        }
+
+        .action-info h4 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        .action-info p {
+            color: #888;
+            font-size: 0.85rem;
+            margin: 0;
+        }
+
+        /* Disease Colors */
+        .disease-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .disease-item {
+            text-align: center;
+            padding: 20px;
+            border-radius: 12px;
+            background: rgba(0,0,0,0.3);
+        }
+
+        .disease-item.blue { border: 2px solid #00b4d8; }
+        .disease-item.yellow { border: 2px solid #ffd60a; }
+        .disease-item.black { border: 2px solid #888; }
+        .disease-item.red { border: 2px solid #ff4444; }
+
+        .disease-cube {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            margin: 0 auto 10px;
+        }
+
+        .disease-cube.blue { background: #00b4d8; }
+        .disease-cube.yellow { background: #ffd60a; }
+        .disease-cube.black { background: #666; }
+        .disease-cube.red { background: #ff4444; }
+
+        .disease-name {
+            font-weight: 700;
+        }
+
+        .disease-region {
+            color: #888;
+            font-size: 0.85rem;
+        }
+
+        /* Step List */
+        .step-list {
+            counter-reset: step;
+        }
+
+        .step-item {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #00ff88, #00b4d8);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            color: #000;
+            flex-shrink: 0;
+        }
+
+        .step-content {
+            flex: 1;
+            padding-top: 5px;
+        }
+
+        .step-content h4 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            margin-bottom: 8px;
+        }
+
+        .step-content p {
+            color: #888;
+            font-size: 0.95rem;
+        }
+
+        /* Tips List */
+        .tips-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .tip-item {
+            display: flex;
+            gap: 15px;
+            background: rgba(0,0,0,0.2);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 3px solid #00ff88;
+        }
+
+        .tip-icon {
+            font-size: 1.5rem;
+        }
+
+        .tip-content h4 {
+            margin-bottom: 5px;
+        }
+
+        .tip-content p {
+            color: #888;
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        /* FAQ */
+        .faq-item {
+            background: rgba(0,0,0,0.2);
+            border-radius: 12px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .faq-question {
+            padding: 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .faq-question:hover {
+            background: rgba(255,255,255,0.05);
+        }
+
+        .faq-question i {
+            transition: transform 0.3s;
+        }
+
+        .faq-item.open .faq-question i {
+            transform: rotate(180deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .faq-item.open .faq-answer {
+            max-height: 500px;
+        }
+
+        .faq-answer-content {
+            padding: 0 20px 20px;
+            color: #888;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                padding: 15px 20px;
+            }
+
+            .main-content {
+                padding: 20px 15px;
+            }
+
+            .page-title h1 {
+                font-size: 1.8rem;
+            }
+
+            .nav-tabs {
+                justify-content: flex-start;
+            }
+
+            .roles-grid,
+            .actions-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .disease-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <a href="index.html" class="logo">
+            <span class="logo-icon">🌍</span>
+            <h1>PANDEMIC</h1>
+        </a>
+        <a href="index.html" class="back-btn">
+            <i class="fas fa-arrow-left"></i> Kembali
+        </a>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Page Title -->
+        <div class="page-title">
+            <h1>📖 CARA BERMAIN</h1>
+            <p>Pelajari aturan dan strategi untuk memenangkan Pandemic</p>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showSection('overview')">
+                <i class="fas fa-info-circle"></i> Gambaran
+            </button>
+            <button class="nav-tab" onclick="showSection('setup')">
+                <i class="fas fa-play-circle"></i> Setup Game
+            </button>
+            <button class="nav-tab" onclick="showSection('turns')">
+                <i class="fas fa-sync-alt"></i> Giliran
+            </button>
+            <button class="nav-tab" onclick="showSection('actions')">
+                <i class="fas fa-hand-pointer"></i> Aksi
+            </button>
+            <button class="nav-tab" onclick="showSection('roles')">
+                <i class="fas fa-users"></i> Role
+            </button>
+            <button class="nav-tab" onclick="showSection('winning')">
+                <i class="fas fa-trophy"></i> Menang/Kalah
+            </button>
+            <button class="nav-tab" onclick="showSection('tips')">
+                <i class="fas fa-lightbulb"></i> Tips
+            </button>
+            <button class="nav-tab" onclick="showSection('faq')">
+                <i class="fas fa-question-circle"></i> FAQ
+            </button>
+        </div>
+
+        <!-- ==================== OVERVIEW SECTION ==================== -->
+        <section class="section active" id="section-overview">
+            <h2 class="section-title"><i class="fas fa-info-circle"></i> Gambaran Umum</h2>
+            
+            <div class="card">
+                <h3 class="card-title">🎯 Tujuan Permainan</h3>
+                <p>
+                    Pandemic adalah game kooperatif di mana semua pemain bekerja sama sebagai tim untuk menghentikan penyebaran 4 penyakit mematikan yang mengancam dunia. 
+                    <strong>Kalian menang atau kalah bersama!</strong>
+                </p>
+                
+                <div class="highlight-box">
+                    <div class="highlight-box-title">
+                        <i class="fas fa-check-circle"></i> Cara Menang
+                    </div>
+                    <p style="margin:0; color: #aaa;">
+                        Temukan <strong>OBAT untuk keempat penyakit</strong> sebelum waktu habis atau wabah tak terkendali.
+                    </p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">🦠 Empat Penyakit</h3>
+                <p>Ada 4 penyakit berbeda yang menyebar di berbagai wilayah dunia:</p>
+                
+                <div class="disease-grid">
+                    <div class="disease-item blue">
+                        <div class="disease-cube blue"></div>
+                        <div class="disease-name">Biru</div>
+                        <div class="disease-region">Amerika & Eropa</div>
+                    </div>
+                    <div class="disease-item yellow">
+                        <div class="disease-cube yellow"></div>
+                        <div class="disease-name">Kuning</div>
+                        <div class="disease-region">Amerika Latin & Afrika</div>
+                    </div>
+                    <div class="disease-item black">
+                        <div class="disease-cube black"></div>
+                        <div class="disease-name">Hitam</div>
+                        <div class="disease-region">Timur Tengah & Asia Selatan</div>
+                    </div>
+                    <div class="disease-item red">
+                        <div class="disease-cube red"></div>
+                        <div class="disease-name">Merah</div>
+                        <div class="disease-region">Asia Timur & Oceania</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">👥 Jumlah Pemain</h3>
+                <p>Game ini dapat dimainkan oleh <strong>2-10 pemain</strong>. Semakin banyak pemain, semakin banyak role dengan kemampuan unik yang dapat dimanfaatkan!</p>
+                
+                <ul>
+                    <li><strong>2-3 Pemain:</strong> Lebih banyak kartu per pemain, koordinasi lebih mudah</li>
+                    <li><strong>4-5 Pemain:</strong> Jumlah ideal, seimbang</li>
+                    <li><strong>6-10 Pemain:</strong> Lebih menantang, perlu koordinasi lebih baik</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- ==================== SETUP SECTION ==================== -->
+        <section class="section" id="section-setup">
+            <h2 class="section-title"><i class="fas fa-play-circle"></i> Setup Game</h2>
+            
+            <div class="card">
+                <h3 class="card-title">📋 Persiapan Awal</h3>
+                
+                <div class="step-list">
+                    <div class="step-item">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h4>Host Membuat Room</h4>
+                            <p>Satu orang membuka game di TV/layar besar sebagai Host. Kode room akan ditampilkan.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="step-item">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h4>Pemain Bergabung</h4>
+                            <p>Pemain lain scan QR code atau masukkan kode room di HP masing-masing.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="step-item">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h4>Pilih Pengaturan</h4>
+                            <p>Host memilih tingkat kesulitan (jumlah kartu Epidemic) dan batas waktu per giliran.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="step-item">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <h4>Semua Pemain Ready</h4>
+                            <p>Setiap pemain menekan tombol "Ready" di HP mereka. Minimal 2 pemain untuk mulai.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="step-item">
+                        <div class="step-number">5</div>
+                        <div class="step-content">
+                            <h4>Game Dimulai!</h4>
+                            <p>Host menekan "Mulai Game". Role dibagikan secara acak dan semua pemain mulai di Atlanta.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">⚙️ Tingkat Kesulitan</h3>
+                
+                <div class="actions-grid">
+                    <div class="action-card">
+                        <div class="action-icon">😊</div>
+                        <div class="action-info">
+                            <h4>Mudah</h4>
+                            <p>4 kartu Epidemic. Cocok untuk pemula.</p>
+                        </div>
+                    </div>
+                    <div class="action-card">
+                        <div class="action-icon">😐</div>
+                        <div class="action-info">
+                            <h4>Sedang</h4>
+                            <p>5 kartu Epidemic. Tantangan seimbang.</p>
+                        </div>
+                    </div>
+                    <div class="action-card">
+                        <div class="action-icon">😈</div>
+                        <div class="action-info">
+                            <h4>Sulit</h4>
+                            <p>6 kartu Epidemic. Untuk pemain berpengalaman.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TURNS SECTION ==================== -->
+        <section class="section" id="section-turns">
+            <h2 class="section-title"><i class="fas fa-sync-alt"></i> Giliran Bermain</h2>
+            
+            <div class="card">
+                <h3 class="card-title">🔄 Struktur Giliran</h3>
+                <p>Setiap giliran terdiri dari 3 fase:</p>
+                
+                <div class="step-list">
+                    <div class="step-item">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h4>Fase Aksi (4 Aksi)</h4>
+                            <p>Lakukan hingga 4 aksi. Kamu bisa melakukan aksi yang sama berkali-kali atau kombinasi berbeda.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="step-item">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h4>Fase Ambil Kartu (2 Kartu)</h4>
+                            <p>Ambil 2 kartu dari Player Deck. Jika dapat kartu Epidemic, proses Epidemic terjadi!</p>
+                        </div>
+                    </div>
+                    
+                    <div class="step-item">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h4>Fase Infeksi</h4>
+                            <p>Ambil kartu dari Infection Deck sesuai Infection Rate (2-4 kartu). Tambahkan kubus penyakit ke kota tersebut.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">⚠️ Epidemic!</h3>
+                <p>Ketika kartu Epidemic diambil:</p>
+                
+                <ol>
+                    <li><strong>Increase:</strong> Naikkan Infection Rate satu level</li>
+                    <li><strong>Infect:</strong> Ambil kartu dari BAWAH Infection Deck, tambahkan 3 kubus penyakit</li>
+                    <li><strong>Intensify:</strong> Kocok Infection Discard Pile dan taruh di ATAS Infection Deck</li>
+                </ol>
+                
+                <div class="highlight-box warning">
+                    <div class="highlight-box-title">
+                        <i class="fas fa-exclamation-triangle"></i> Perhatian!
+                    </div>
+                    <p style="margin:0; color: #aaa;">
+                        Setelah Epidemic, kota yang sudah terinfeksi akan lebih mungkin terinfeksi lagi karena kartunya di atas deck!
+                    </p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">💥 Outbreak</h3>
+                <p>Outbreak terjadi ketika kota mendapat kubus ke-4 dari warna yang sama:</p>
+                
+                <ul>
+                    <li>Kubus ke-4 <strong>tidak</strong> ditambahkan ke kota tersebut</li>
+                    <li>Outbreak Counter naik 1</li>
+                    <li>Setiap kota yang <strong>terhubung</strong> mendapat 1 kubus penyakit warna tersebut</li>
+                    <li>Ini bisa menyebabkan <strong>chain reaction</strong> outbreak!</li>
+                </ul>
+                
+                <div class="highlight-box danger">
+                    <div class="highlight-box-title">
+                        <i class="fas fa-skull-crossbones"></i> 8 Outbreak = KALAH!
+                    </div>
+                    <p style="margin:0; color: #aaa;">
+                        Jika Outbreak Counter mencapai 8, game berakhir dan kalian kalah!
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== ACTIONS SECTION ==================== -->
+        <section class="section" id="section-actions">
+            <h2 class="section-title"><i class="fas fa-hand-pointer"></i> Aksi yang Tersedia</h2>
+            
+            <div class="card">
+                <h3 class="card-title">🚶 Aksi Pergerakan</h3>
+                
+                <div class="actions-grid">
+                    <div class="action-card">
+                        <div class="action-icon" style="color: #00b4d8;">🚶</div>
+                        <div class="action-info">
+                            <h4>Drive/Ferry</h4>
+                            <p>Pindah ke kota yang terhubung langsung (garis pada peta).</p>
+                        </div>
+                    </div>
+                    
+                    <div class="action-card">
+                        <div class="action-icon" style="color: #ff66aa;">✈️</div>
+                        <div class="action-info">
+                            <h4>Direct Flight</h4>
+                            <p>Buang kartu kota untuk terbang langsung ke kota tersebut.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="action-card">
+                        <div class="action-icon" style="color: #66ffaa;">🛫</div>
+                        <div class="action-info">
+                            <h4>Charter Flight</h4>
+                            <p>Buang kartu kota tempat kamu berada untuk terbang ke kota MANAPUN.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="action-card">
+                        <div class="action-icon" style="color: #ff9966;">🚐</div>
+                        <div class="action-info">
+                            <h4>Shuttle Flight</h4>
+                            <p>Pindah dari satu Research Station ke Research Station lainnya.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">🏥 Aksi Lainnya</h3>
+                
+                <div class="actions-grid">
+                    <div class="action-card">
+                        <div class="action-icon" style="color: #00ff88;">💊</div>
+                        <div class="action-info">
+                            <h4>Treat Disease</h4>
+                            <p>Hapus 1 kubus penyakit dari kota saat ini. Jika obat sudah ditemukan, hapus SEMUA kubus warna tersebut.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="action-card">
+                        <div class="action-icon" style="color: #ffd60a;">🏗️</div>
+                        <div class="action-info">
+                            <h4>Build Research Station</h4>
+                            <p>Buang kartu kota saat ini untuk membangun Research Station di kota tersebut.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="action-card">
+                        <div class="action-icon" style="color: #ff6b6b;">🔄</div>
+                        <div class="action-info">
+                            <h4>Share Knowledge</h4>
+                            <p>Berikan atau terima kartu kota saat ini dengan pemain lain di kota yang sama.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="action-card">
+                        <div class="action-icon" style="color: #aa66ff;">🧪</div>
+                        <div class="action-info">
+                            <h4>Discover Cure</h4>
+                            <p>Di Research Station, buang 5 kartu warna sama untuk menemukan obat penyakit tersebut.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">⚡ Kartu Event</h3>
+                <p>Kartu Event dapat dimainkan kapan saja (termasuk giliran pemain lain) dan <strong>tidak menghabiskan aksi</strong>:</p>
+                
+                <ul>
+                    <li><strong>Airlift:</strong> Pindahkan pion pemain manapun ke kota manapun</li>
+                    <li><strong>Government Grant:</strong> Bangun Research Station gratis di kota manapun</li>
+                    <li><strong>One Quiet Night:</strong> Lewati fase infeksi berikutnya</li>
+                    <li><strong>Forecast:</strong> Lihat 6 kartu teratas Infection Deck dan susun ulang</li>
+                    <li><strong>Resilient Population:</strong> Buang 1 kartu dari Infection Discard</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- ==================== ROLES SECTION ==================== -->
+        <section class="section" id="section-roles">
+            <h2 class="section-title"><i class="fas fa-users"></i> Role Pemain</h2>
+            
+            <div class="card">
+                <p>Setiap pemain mendapat role dengan kemampuan khusus. Gunakan kemampuan ini untuk keuntungan tim!</p>
+            </div>
+
+            <div class="roles-grid">
+                <div class="role-card" style="border-color: #ff6b6b;">
+                    <div class="role-header">
+                        <div class="role-icon">🏥</div>
+                        <div class="role-name">Medic</div>
+                    </div>
+                    <p class="role-ability">Hapus SEMUA kubus penyakit satu warna dengan 1 aksi. Jika obat sudah ditemukan, kubus otomatis dihapus saat masuk kota.</p>
+                </div>
+
+                <div class="role-card" style="border-color: #4ecdc4;">
+                    <div class="role-header">
+                        <div class="role-icon">🔬</div>
+                        <div class="role-name">Scientist</div>
+                    </div>
+                    <p class="role-ability">Hanya butuh 4 kartu (bukan 5) untuk menemukan obat.</p>
+                </div>
+
+                <div class="role-card" style="border-color: #ffe66d;">
+                    <div class="role-header">
+                        <div class="role-icon">📚</div>
+                        <div class="role-name">Researcher</div>
+                    </div>
+                    <p class="role-ability">Bisa memberikan kartu kota MANAPUN ke pemain di kota yang sama (tidak harus kartu kota saat ini).</p>
+                </div>
+
+                <div class="role-card" style="border-color: #95e1d3;">
+                    <div class="role-header">
+                        <div class="role-icon">🔧</div>
+                        <div class="role-name">Operations Expert</div>
+                    </div>
+                    <p class="role-ability">Bisa membangun Research Station tanpa membuang kartu. Dari RS, bisa buang kartu apapun untuk terbang ke kota manapun.</p>
+                </div>
+
+                <div class="role-card" style="border-color: #a8d8ea;">
+                    <div class="role-header">
+                        <div class="role-icon">📡</div>
+                        <div class="role-name">Dispatcher</div>
+                    </div>
+                    <p class="role-ability">Bisa memindahkan pion pemain lain seperti milik sendiri. Bisa memindahkan pemain ke lokasi pemain lain.</p>
+                </div>
+
+                <div class="role-card" style="border-color: #aa96da;">
+                    <div class="role-header">
+                        <div class="role-icon">🛡️</div>
+                        <div class="role-name">Quarantine Specialist</div>
+                    </div>
+                    <p class="role-ability">Mencegah penempatan kubus penyakit di kota saat ini DAN semua kota yang terhubung langsung.</p>
+                </div>
+
+                <div class="role-card" style="border-color: #fcbad3;">
+                    <div class="role-header">
+                        <div class="role-icon">📋</div>
+                        <div class="role-name">Contingency Planner</div>
+                    </div>
+                    <p class="role-ability">Bisa mengambil kartu Event dari discard pile dan menyimpannya untuk digunakan nanti.</p>
+                </div>
+
+                <div class="role-card" style="border-color: #f38181;">
+                    <div class="role-header">
+                        <div class="role-icon">🎯</div>
+                        <div class="role-name">Generalist</div>
+                    </div>
+                    <p class="role-ability">Mendapat 5 aksi per giliran (bukan 4).</p>
+                </div>
+
+                <div class="role-card" style="border-color: #3d5a80;">
+                    <div class="role-header">
+                        <div class="role-icon">🕵️</div>
+                        <div class="role-name">Field Operative</div>
+                    </div>
+                    <p class="role-ability">Saat mengobati penyakit, bisa menyimpan kubus sebagai "sampel" untuk membantu menemukan obat.</p>
+                </div>
+
+                <div class="role-card" style="border-color: #98c1d9;">
+                    <div class="role-header">
+                        <div class="role-icon">✈️</div>
+                        <div class="role-name">Pilot</div>
+                    </div>
+                    <p class="role-ability">Sekali per giliran, bisa terbang ke kota manapun tanpa membuang kartu.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== WINNING SECTION ==================== -->
+        <section class="section" id="section-winning">
+            <h2 class="section-title"><i class="fas fa-trophy"></i> Kondisi Menang & Kalah</h2>
+            
+            <div class="card">
+                <h3 class="card-title">🏆 Cara Menang</h3>
+                
+                <div class="highlight-box">
+                    <div class="highlight-box-title" style="color: #00ff88;">
+                        <i class="fas fa-check-circle"></i> SATU-SATUNYA Cara Menang
+                    </div>
+                    <p style="margin:0; color: #fff; font-size: 1.1rem;">
+                        Temukan OBAT untuk <strong>keempat penyakit</strong> (biru, kuning, hitam, merah).
+                    </p>
+                </div>
+                
+                <p style="margin-top: 15px; color: #888;">
+                    Catatan: Kamu TIDAK perlu menghapus semua kubus penyakit dari peta. Cukup temukan obat untuk keempat penyakit!
+                </p>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">💀 Cara Kalah</h3>
+                <p>Ada <strong>3 cara</strong> untuk kalah dalam Pandemic:</p>
+                
+                <div class="actions-grid" style="margin-top: 20px;">
+                    <div class="action-card" style="border-left: 3px solid #ff4444;">
+                        <div class="action-icon" style="color: #ff4444;">💥</div>
+                        <div class="action-info">
+                            <h4>8 Outbreak</h4>
+                            <p>Jika Outbreak Counter mencapai 8, kepanikan melanda dunia!</p>
+                        </div>
+                    </div>
+                    
+                    <div class="action-card" style="border-left: 3px solid #ff4444;">
+                        <div class="action-icon" style="color: #ff4444;">🧊</div>
+                        <div class="action-info">
+                            <h4>Kubus Habis</h4>
+                            <p>Jika perlu menambahkan kubus tapi kubus warna tersebut sudah habis (24 kubus per warna).</p>
+                        </div>
+                    </div>
+                    
+                    <div class="action-card" style="border-left: 3px solid #ff4444;">
+                        <div class="action-icon" style="color: #ff4444;">🃏</div>
+                        <div class="action-info">
+                            <h4>Kartu Habis</h4>
+                            <p>Jika pemain harus mengambil kartu tapi Player Deck sudah kosong.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">🧪 Obat vs Eradikasi</h3>
+                
+                <ul>
+                    <li><strong>Obat (Cure):</strong> Ditemukan dengan membuang 5 kartu warna sama di Research Station. Setelah obat ditemukan, mengobati penyakit menghapus SEMUA kubus sekaligus.</li>
+                    <li><strong>Eradikasi:</strong> Jika obat sudah ditemukan DAN semua kubus warna tersebut dihapus dari peta, penyakit itu "eradicated" - tidak akan muncul lagi!</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- ==================== TIPS SECTION ==================== -->
+        <section class="section" id="section-tips">
+            <h2 class="section-title"><i class="fas fa-lightbulb"></i> Tips & Strategi</h2>
+            
+            <div class="card">
+                <h3 class="card-title">🧠 Strategi Umum</h3>
+                
+                <div class="tips-list">
+                    <div class="tip-item">
+                        <div class="tip-icon">🗣️</div>
+                        <div class="tip-content">
+                            <h4>Komunikasi adalah Kunci</h4>
+                            <p>Selalu diskusikan rencana dengan tim. Beritahu kartu apa yang kamu punya dan apa rencanamu.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="tip-item">
+                        <div class="tip-icon">🎯</div>
+                        <div class="tip-content">
+                            <h4>Prioritaskan Obat, Bukan Mengobati</h4>
+                            <p>Fokus mengumpulkan kartu untuk menemukan obat. Mengobati penyakit hanya mencegah outbreak, tidak memenangkan game.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="tip-item">
+                        <div class="tip-icon">🏥</div>
+                        <div class="tip-content">
+                            <h4>Bangun Research Station Strategis</h4>
+                            <p>RS memudahkan pergerakan dan diperlukan untuk menemukan obat. Bangun di lokasi strategis.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="tip-item">
+                        <div class="tip-icon">👀</div>
+                        <div class="tip-content">
+                            <h4>Perhatikan Kota dengan 3 Kubus</h4>
+                            <p>Kota dengan 3 kubus sangat berbahaya! Satu infeksi lagi akan menyebabkan outbreak.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="tip-item">
+                        <div class="tip-icon">🔄</div>
+                        <div class="tip-content">
+                            <h4>Manfaatkan Share Knowledge</h4>
+                            <p>Kumpulkan kartu warna sama ke satu pemain (terutama Scientist) untuk mempercepat penemuan obat.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="tip-item">
+                        <div class="tip-icon">⏰</div>
+                        <div class="tip-content">
+                            <h4>Perhatikan Jumlah Kartu Tersisa</h4>
+                            <p>Deck yang menipis berarti waktu hampir habis. Rencanakan dengan baik!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">🎭 Tips per Role</h3>
+                
+                <div class="tips-list">
+                    <div class="tip-item">
+                        <div class="tip-icon">🏥</div>
+                        <div class="tip-content">
+                            <h4>Medic</h4>
+                            <p>Fokus di area dengan banyak kubus. Setelah obat ditemukan, kamu bisa "membersihkan" kota otomatis.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="tip-item">
+                        <div class="tip-icon">🔬</div>
+                        <div class="tip-content">
+                            <h4>Scientist</h4>
+                            <p>Kamu prioritas untuk menemukan obat. Minta tim mengumpulkan kartu untukmu.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="tip-item">
+                        <div class="tip-icon">📚</div>
+                        <div class="tip-content">
+                            <h4>Researcher</h4>
+                            <p>Fokus mengumpulkan kartu dan mendistribusikan ke Scientist atau pemain yang hampir lengkap.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="tip-item">
+                        <div class="tip-icon">🛡️</div>
+                        <div class="tip-content">
+                            <h4>Quarantine Specialist</h4>
+                            <p>Posisikan diri di area dengan banyak kubus atau di "persimpangan" kota penting.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== FAQ SECTION ==================== -->
+        <section class="section" id="section-faq">
+            <h2 class="section-title"><i class="fas fa-question-circle"></i> FAQ</h2>
+            
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    Berapa lama durasi satu game?
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        Rata-rata 30-60 menit tergantung jumlah pemain dan tingkat kesulitan. Game bisa lebih cepat jika kalah di awal!
+                    </div>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    Apakah bisa menyimpan aksi untuk giliran berikutnya?
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        Tidak. Aksi yang tidak digunakan akan hilang. Kamu harus menggunakan semua 4 aksi (atau kurang) di giliranmu.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    Apa yang terjadi jika kartu di tangan lebih dari 7?
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        Kamu harus membuang kartu hingga tersisa 7. Pilih dengan bijak kartu mana yang dibuang!
+                    </div>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    Bisakah outbreak menyebar ke kota yang sudah outbreak di chain yang sama?
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        Tidak. Dalam satu "chain reaction", setiap kota hanya bisa outbreak sekali. Tapi outbreak counter tetap naik untuk setiap outbreak.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    Apakah harus menghapus semua kubus untuk menang?
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        Tidak! Kamu hanya perlu menemukan OBAT untuk keempat penyakit. Kubus di peta tidak perlu dihapus semua.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    Kapan kartu Event bisa dimainkan?
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        Kartu Event bisa dimainkan KAPAN SAJA, termasuk di giliran pemain lain. Tidak menghabiskan aksi. Bisa dimainkan bahkan saat bukan giliranmu!
+                    </div>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    Bagaimana jika pemain disconnect?
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        Pemain bisa reconnect dengan memasukkan kode room yang sama dan nama yang sama. Data game tersimpan di server.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    Bisakah bermain sendirian?
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        Game ini membutuhkan minimal 2 pemain. Tapi kamu bisa mengontrol 2 role sendiri dengan 2 device berbeda!
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Show section
+        function showSection(sectionId) {
+            // Update tabs
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Update sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(`section-${sectionId}`).classList.add('active');
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        // Toggle FAQ
+        function toggleFaq(element) {
+            const faqItem = element.parentElement;
+            faqItem.classList.toggle('open');
+        }
+        
+        // Check URL hash for section
+        window.addEventListener('load', () => {
+            const hash = window.location.hash.replace('#', '');
+            if (hash) {
+                const tab = document.querySelector(`[onclick="showSection('${hash}')"]`);
+                if (tab) {
+                    tab.click();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
